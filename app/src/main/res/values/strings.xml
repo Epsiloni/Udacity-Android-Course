@@ -27,6 +27,11 @@
         <xliff:g id="day_of_week">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g>
     </string>
 
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="today_temperature_content_description">
+        Today\'s highest temperature is <xliff:g id="high">%1$s</xliff:g> and lowest is <xliff:g id="low">%2$s</xliff:g>
+    </string>
+
     <!-- Strings for formatting weather-related data -->
     <!-- Temperature format [CHAR LIMIT=5] -->
     <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>

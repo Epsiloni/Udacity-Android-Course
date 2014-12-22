@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -26,6 +27,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
   private static final int DETAILS_LOADER = 1;
   public static final String SUNSHINE_APP_HASHTAG = "#SunshineApp";
+  private static final String LOCATION_KEY = "LOCATION_KEY";
+
   private TextView mDayTextView;
   private TextView mDescTextView;
   private TextView mMaxTextView;
@@ -72,9 +75,30 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
   private TextView mPressureTextView;
   private TextView mDateTextView;
   private ImageView mDescIcon;
+  private String mLocation;
 
   public DetailsFragment() {
     setHasOptionsMenu(true);
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    if (savedInstanceState != null) {
+      mLocation = savedInstanceState.getString(LOCATION_KEY);
+    }
+
+    Bundle arguments = getArguments();
+    if (arguments != null && arguments.containsKey(DetailActivity.DATE_KEY)) {
+      getLoaderManager().initLoader(DETAILS_LOADER, null, this);
+    }
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    outState.putString(LOCATION_KEY, mLocation);
+    super.onSaveInstanceState(outState);
   }
 
   @Override
@@ -82,18 +106,27 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-    getLoaderManager().initLoader(DETAILS_LOADER, getActivity().getIntent().getExtras(), this);
-
-    mDayTextView = (TextView) rootView.findViewById(R.id.detail_activity_day);
-    mDateTextView = (TextView) rootView.findViewById(R.id.detail_activity_date);
-    mDescIcon = (ImageView) rootView.findViewById(R.id.detail_activity_icon);
-    mDescTextView = (TextView) rootView.findViewById(R.id.detail_activity_desc);
-    mMaxTextView = (TextView) rootView.findViewById(R.id.detail_activity_max);
-    mMinTextView = (TextView) rootView.findViewById(R.id.detail_activity_min);
-    mHumidityTextView = (TextView) rootView.findViewById(R.id.detail_activity_humidity);
-    mWindTextView = (TextView) rootView.findViewById(R.id.detail_activity_wind);
-    mPressureTextView = (TextView) rootView.findViewById(R.id.detail_activity_pressure);
+    mDayTextView = (TextView) rootView.findViewById(R.id.detail_day_textview);
+    mDateTextView = (TextView) rootView.findViewById(R.id.detail_date_textview);
+    mDescIcon = (ImageView) rootView.findViewById(R.id.detail_icon);
+    mDescTextView = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+    mMaxTextView = (TextView) rootView.findViewById(R.id.detail_high_textview);
+    mMinTextView = (TextView) rootView.findViewById(R.id.detail_low_textview);
+    mHumidityTextView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
+    mWindTextView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+    mPressureTextView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
     return rootView;
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    Bundle arguments = getArguments();
+    if (arguments != null && arguments.containsKey(DetailActivity.DATE_KEY) && mLocation != null
+        && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
+      getLoaderManager().restartLoader(DETAILS_LOADER, null, this);
+    }
   }
 
   @Override
@@ -124,16 +157,18 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
   @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-    String location = Utility.getPreferredLocation(getActivity());
+    String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATETEXT + " ASC";
+    String dateStr = getArguments().getString(DetailActivity.DATE_KEY);
+    mLocation = Utility.getPreferredLocation(getActivity());
     Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-        location, args.getString(Intent.EXTRA_TEXT));
+        mLocation, dateStr);
     Loader<Cursor> loader = new CursorLoader(
         getActivity(),
         weatherForLocationUri,
         FORECAST_COLUMNS,
         null,
         null,
-        null
+        sortOrder
     );
 
     return loader;

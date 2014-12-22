@@ -20,10 +20,15 @@ public class ForecastAdapter extends CursorAdapter {
   private static final int VIEW_TYPE_TODAY = 0;
   private static final int VIEW_TYPE_FUTURE_DAY = 1;
   private static final int VIEW_TYPE_COUNT = 2;
+  private boolean mShouldUseTodayLayout;
 
   @Override
   public int getItemViewType(int position) {
-    return position == 0 ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+    return position == 0 && mShouldUseTodayLayout ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+  }
+
+  public void setShouldUseTodayLayout(boolean shuoldUseTodayLayout) {
+    mShouldUseTodayLayout = shuoldUseTodayLayout;
   }
 
   @Override
@@ -64,8 +69,16 @@ public class ForecastAdapter extends CursorAdapter {
     // Read weather icon ID from cursor
     int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
 
+    float high = cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
+    float low = cursor.getFloat(ForecastFragment.COL_WEATHER_MIN_TEMP);
+    // Read user preference for metric or imperial temperature units
+    boolean isMetric = Utility.isMetric(context);
+    String highTemp = Utility.formatTemperature(context, high, isMetric);
+    String lowtemp = Utility.formatTemperature(context, low, isMetric);
+
     if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
       viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+      viewHolder.dateView.setContentDescription(context.getString(R.string.today_temperature_content_description, highTemp, lowtemp));
     } else {
       viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
     }
@@ -79,17 +92,10 @@ public class ForecastAdapter extends CursorAdapter {
     String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
     // Find TextView and set weather forecast on it
     viewHolder.descriptionView.setText(description);
+    viewHolder.iconView.setContentDescription(description);
 
-    // Read user preference for metric or imperial temperature units
-    boolean isMetric = Utility.isMetric(context);
-
-    // Read high temperature from cursor
-    float high = cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
-    viewHolder.highTempView.setText(Utility.formatTemperature(context, high, isMetric));
-
-    // Read low temperature from cursor
-    float low = cursor.getFloat(ForecastFragment.COL_WEATHER_MIN_TEMP);
-    viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
+    viewHolder.highTempView.setText(highTemp);
+    viewHolder.lowTempView.setText(lowtemp);
   }
 
   /**

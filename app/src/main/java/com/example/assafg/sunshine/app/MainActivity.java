@@ -6,33 +6,38 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
 
-  private static final String TAG =MainActivity.class.getSimpleName();
+  private static final String TAG = MainActivity.class.getSimpleName();
+  private boolean mTwoPane;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    Log.v(TAG, "onCreate");
+    if (findViewById(R.id.weather_detail_container) != null) {
+      // If this is present then the activity should be in two-pane mode.
 
-    if (savedInstanceState == null) {
-      getSupportFragmentManager().beginTransaction()
-          .add(R.id.container, new ForecastFragment())
-          .commit();
+      mTwoPane = true;
+
+      // In two-pane mode, show the detail view in this activity by adding or replacing
+      // the detail fragment using a fragment transaction.
+      if (savedInstanceState == null) {
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.weather_detail_container, new DetailsFragment())
+            .commit();
+      }
+    } else {
+      mTwoPane = false;
     }
-  }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    Log.v(TAG, "onResume");
+    ForecastFragment fragment = (ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+    fragment.setShouldUseTodayLayout(!mTwoPane);
   }
 
   @Override
@@ -72,6 +77,28 @@ public class MainActivity extends ActionBarActivity {
     intent.setData(geoLocation);
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(intent);
+    }
+  }
+
+  @Override
+  public void onItemSelected(String date) {
+
+    if (mTwoPane) {
+
+      DetailsFragment detailsFragment = new DetailsFragment();
+
+      Bundle b = new Bundle();
+      b.putString(DetailActivity.DATE_KEY, date);
+      detailsFragment.setArguments(b);
+
+      getSupportFragmentManager()
+          .beginTransaction()
+          .replace(R.id.weather_detail_container, detailsFragment)
+          .commit();
+    } else {
+      Intent i = new Intent(this, DetailActivity.class);
+      i.putExtra(DetailActivity.DATE_KEY, date);
+      startActivity(i);
     }
   }
 }

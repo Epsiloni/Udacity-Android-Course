@@ -1,7 +1,6 @@
 package com.example.assafg.sunshine.app;
 
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,6 +35,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
   private static final String TAG = ForecastFragment.class.getSimpleName();
 
   private static final int FORECAST_LOADER = 0;
+  public static final int INVALID_POSITION = -1;
+  public static final String SELECTED_POSITION = "SELECTED_POSITION";
   private String mLocation;
 
   // For the forecast view we're showing only a small subset of the stored data.
@@ -67,6 +68,28 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
   private ForecastAdapter mForecastAdapter;
   private ListView mWeeklyForecastListView;
+  private int mSelectedPosition = INVALID_POSITION;
+  private boolean mTwoPane;
+
+  public void setShouldUseTodayLayout(boolean twoPane) {
+
+    mTwoPane = twoPane;
+    if (mForecastAdapter != null) {
+      mForecastAdapter.setShouldUseTodayLayout(twoPane);
+    }
+  }
+
+  /**
+   * A callback interface that all activities containing this fragment must
+   * implement. This mechanism allows activities to be notified of item
+   * selections.
+   */
+  public interface Callback {
+    /**
+     * Callback for when an item has been selected.
+     */
+    public void onItemSelected(String date);
+  }
 
   public ForecastFragment() {
   }
@@ -131,6 +154,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         null,
         0);
 
+    mForecastAdapter.setShouldUseTodayLayout(mTwoPane);
+
     mWeeklyForecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
     mWeeklyForecastListView.setAdapter(mForecastAdapter);
 
@@ -139,19 +164,28 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        mSelectedPosition = position;
         ForecastAdapter adapter = (ForecastAdapter)parent.getAdapter();
         Cursor cursor = adapter.getCursor();
 
         if (cursor != null && cursor.moveToPosition(position)) {
           String date = cursor.getString(COL_WEATHER_DATE);
-          Intent i = new Intent(getActivity(), DetailActivity.class);
-          i.putExtra(Intent.EXTRA_TEXT, date);
-          startActivity(i);
+
+          ((Callback)getActivity()).onItemSelected(date);
         }
       }
     });
 
+    if (savedInstanceState != null) {
+      mSelectedPosition = savedInstanceState.getInt(SELECTED_POSITION, INVALID_POSITION);
+    }
     return rootView;
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    outState.putInt(SELECTED_POSITION, mSelectedPosition);
+    super.onSaveInstanceState(outState);
   }
 
   @Override
@@ -186,6 +220,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
   @Override
   public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
     mForecastAdapter.swapCursor(data);
+
+    if (mSelectedPosition != INVALID_POSITION) {
+      mWeeklyForecastListView.smoothScrollToPosition(mSelectedPosition);
+    }
   }
 
   @Override
