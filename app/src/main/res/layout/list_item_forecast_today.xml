@@ -8,15 +8,11 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/list_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
@@ -25,6 +21,32 @@
             android:layout_height="match_parent"
             android:text="Tomorrow"/>
 
+        <TextView
+            android:id="@+id/list_item_high_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="21"/>
+
+
+        <TextView
+            android:id="@+id/list_item_low_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="8"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/list_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/list_item_forecast_textview"
@@ -32,26 +54,6 @@
             android:layout_height="match_parent"
             android:text="Clear"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/list_item_high_textview"
-            android:text="21"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-
-
-        <TextView
-            android:id="@+id/list_item_low_textview"
-            android:text="8"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </LinearLayout>
