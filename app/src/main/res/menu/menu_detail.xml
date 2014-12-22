@@ -4,13 +4,6 @@
       tools:context="com.example.assafg.sunshine.app.DetailActivity">
 
     <item
-        android:id="@+id/action_share"
-        app:showAsAction="ifRoom"
-        android:title="@string/action_share"
-        android:actionProviderClass=
-            "android.widget.ShareActionProvider" />
-
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

@@ -6,11 +6,35 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context="com.example.assafg.sunshine.app.DetailActivity$PlaceholderFragment">
+                tools:context="com.example.assafg.sunshine.app.DetailActivity.DetailsFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/detail_activity_textview"/>
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/detail_activity_date" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:id="@+id/detail_activity_desc"
+        android:layout_below="@id/detail_activity_date" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:id="@+id/detail_activity_max"
+        android:layout_below="@id/detail_activity_date"
+        android:layout_toRightOf="@id/detail_activity_desc"
+        android:layout_marginLeft="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:id="@+id/detail_activity_min"
+        android:layout_below="@id/detail_activity_date"
+        android:layout_toRightOf="@id/detail_activity_max"/>
 </RelativeLayout>
