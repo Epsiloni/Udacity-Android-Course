@@ -67,7 +67,7 @@ public class ForecastAdapter extends CursorAdapter {
     ViewHolder viewHolder = (ViewHolder) view.getTag();
 
     // Read weather icon ID from cursor
-    int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
+    int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
 
     float high = cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
     float low = cursor.getFloat(ForecastFragment.COL_WEATHER_MIN_TEMP);
