@@ -1,6 +1,11 @@
 package com.example.assafg.sunshine.app;
 
 
+import android.accounts.Account;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +28,7 @@ import com.example.assafg.sunshine.app.Utility.Utility;
 import com.example.assafg.sunshine.app.data.WeatherContract;
 import com.example.assafg.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.assafg.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.assafg.sunshine.app.sync.SunshineSyncAdapter;
 
 import java.util.Date;
 
@@ -133,13 +139,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
   }
 
   private void updateWeather() {
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    String location = Utility.getPreferredLocation(getActivity());
 
-    String unit = preferences.getString(getString(R.string.pref_units_key),
-        getString(R.string.pref_units_default));
-
-    new FetchWeatherTask(getActivity()).execute(location, unit);
+    SunshineSyncAdapter.syncImmediately(getActivity());
   }
 
   @Override

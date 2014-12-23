@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.assafg.sunshine.app.sync.SunshineSyncAdapter;
+
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
 
@@ -38,6 +40,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 
     ForecastFragment fragment = (ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
     fragment.setShouldUseTodayLayout(!mTwoPane);
+
+    // Make sure we've gotten an account created and we're syncing.
+    SunshineSyncAdapter.initializeSyncAdapter(this);
   }
 
   @Override
