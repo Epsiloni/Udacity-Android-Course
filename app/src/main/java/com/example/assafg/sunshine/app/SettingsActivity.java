@@ -87,7 +87,9 @@ public class SettingsActivity extends PreferenceActivity
     if ( !mBindingPreference ) {
       if (preference.getKey().equals(getString(R.string.pref_location_key))) {
         SunshineSyncAdapter.syncImmediately(getApplicationContext());
-      } else {
+
+      } else if (preference.getKey().equals(getString(R.string.pref_units_key))) {
+
         // notify code that weather may be impacted
         getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
       }
