@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WindDirection">
+        <attr name="windSpeed" format="integer" />
+        <attr name="windDirection" format="enum">
+            <enum name="north" value="0"/>
+            <enum name="northEast" value="1"/>
+            <enum name="east" value="2"/>
+            <enum name="southEast" value="3"/>
+            <enum name="south" value="4"/>
+            <enum name="southWest" value="5"/>
+            <enum name="west" value="6"/>
+            <enum name="northWest" value="7"/>
+        </attr>
+    </declare-styleable>
+</resources>

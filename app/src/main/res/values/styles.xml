@@ -3,6 +3,14 @@
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarStyle">@style/ActionBar.Solid.Sunshine</item>
+
+        <item name="colorPrimary">@color/sunshine_blue</item>
+        <item name="colorPrimaryDark">@color/sunshine_blue_dark</item>
+        <item name="colorAccent">@color/sunshine_accents</item>
+
+        <item name="android:colorPrimary">@color/sunshine_blue</item>
+        <item name="android:colorPrimaryDark">@color/sunshine_blue_dark</item>
+        <item name="android:colorAccent">@color/sunshine_accents</item>
     </style>
 
     <!-- ActionBar style -->

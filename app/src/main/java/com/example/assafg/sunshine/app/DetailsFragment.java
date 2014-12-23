@@ -1,5 +1,6 @@
 package com.example.assafg.sunshine.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,9 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.assafg.sunshine.app.CustomViews.WindDirection;
 import com.example.assafg.sunshine.app.Utility.Utility;
 import com.example.assafg.sunshine.app.data.WeatherContract;
 
@@ -76,6 +80,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
   private TextView mDateTextView;
   private ImageView mDescIcon;
   private String mLocation;
+  private WindDirection mWD;
 
   public DetailsFragment() {
     setHasOptionsMenu(true);
@@ -115,6 +120,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     mHumidityTextView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
     mWindTextView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
     mPressureTextView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+    mWD = (WindDirection) rootView.findViewById(R.id.custom_wind_direction);
     return rootView;
   }
 
@@ -199,6 +205,14 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
       float pressure = data.getFloat(COL_WEATHER_PRESSURE);
       mPressureTextView.setText(getString(R.string.format_pressure, pressure));
 
+      String winDeg = Utility.getWindDirectionString(windDegrees);
+      mWD.setWindDirection(Utility.getWindDirectionIntFromString(winDeg));
+
+      AccessibilityManager accessibilityManager =
+          (AccessibilityManager) getActivity().getSystemService(Context.ACCESSIBILITY_SERVICE);
+      if (accessibilityManager.isEnabled()) {
+        accessibilityManager.sendAccessibilityEvent(AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED));
+      }
 
       // We still need this for the share intent
       mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);

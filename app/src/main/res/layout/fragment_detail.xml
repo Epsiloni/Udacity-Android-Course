@@ -76,6 +76,11 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:textColor="@color/grey_700" />
+                
+                <com.example.assafg.sunshine.app.CustomViews.WindDirection
+                    android:id="@+id/custom_wind_direction"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
             </LinearLayout>
         </LinearLayout>
 
